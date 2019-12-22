@@ -17,148 +17,139 @@
 using namespace std;
 
 void person::create_acc(){
+     person writeObject;
 
-     ofstream xl("acc_info.csv" , ios::app );
+     ofstream xl("acc_info.dat" , ios::binary | ios::app);
          cout<<"ENTER FIRST NAME\n";
-     getline(cin,firstname);
+     getline(cin,writeObject.firstname);
 
      cout<<"ENTER MIDDLE NAME \n";
-     getline(cin,middlename);
+     getline(cin,writeObject.middlename);
 
      cout<<"ENTER LAST NAME: "<<endl;
-     getline(cin,lastname);  
+     getline(cin,writeObject.lastname);  
 
      cout<<"ENTER FATHER'S NAME: "<<endl;
-     getline(cin,fname);  
+     getline(cin,writeObject.fname);  
 
      cout<<"ENTER YOUR EMAIL_ID: ";
-     getline(cin,email_id);
+     getline(cin,writeObject.email_id);
 
      cout<<"ENTER PAN CARD NUMBER: "<<endl;
-     getline(cin,pan_no);
+     getline(cin,writeObject.pan_no);
 
      cout<<"ENTER YOUR RESIDENTIAL ADDRESS: "<<endl;
-     getline(cin,address);  
-                     
-     cout<<"ENTER YOUR MOBILE NUMBER: "<<endl;
-     getline(cin, mobile_no);
+     getline(cin,writeObject.address);  
 
-    acc_no = to_string(910000000000 + stol(mobile_no, nullptr, 10)); //generating acc no;
+     long mobileNumber;               
+     cout<<"ENTER YOUR '10 digit' MOBILE NUMBER: "<<endl;
+     cin >> mobileNumber;
+     cin.ignore();
 
-    crn = to_string(int(stol(acc_no)/100000)); //generating crn;
+      writeObject.mobile_no = to_string(mobileNumber);
+      
+      long accountNumber = 910000000000 + mobileNumber;
+      writeObject.acc_no = to_string(accountNumber);
+
+      writeObject.crn = to_string(accountNumber/(500));
+
+    
      string repswrd;
-     bool z;
+     bool areEqual;
 
     do{
      
      cout<<"ENTER PASSWORD FOR YOUR CRN(USER_ACC): ";
-     getline(cin,password);    
+     getline(cin,writeObject.password);    
 
      cout<<"RE-ENTER YOUR PASSWORD: ";
      getline(cin,repswrd);
 
-     if(!(password.compare(repswrd))){
+     if(writeObject.password == repswrd){
                
            cout<<"Passwords matched succesfully!"<<endl<<endl;
-           z = true;
+           areEqual = true;
            }
      else{
           
           cout<<"Passwords didn't match!!! Try again\n"<<endl;
-          z = false;
+          areEqual = false;
                }
 
-         }while(!z);
+         }while(!areEqual);
 
-      cout<<"\n\nAccount created successfully\n\n";
+      xl.write(reinterpret_cast<char*>(&writeObject), sizeof(writeObject));
 
-      cout << "Customer Satisfaction is our main"
-           << "priority, so we have deposited a "
-           << "sum of Rs. 100 into your bank a/c"
-           << endl << endl;
-    
-     xl<<crn<<","
-      << acc_no<< ","
-     << firstname << "," 
-     << middlename << "," 
-     << lastname<< ","
-     << mobile_no<< ","
-     <<email_id<<","
-     << address<< ","
-     <<pan_no<<","
-     <<balance << ","
-     << password<< "\n";
+      cout<<"\n\nAccount created successfully!!\n\n";   
+
+      cout << "\nCRN: " << writeObject.crn;
+     
 
      xl.close();
-
-     cout<<endl;  
-
      }
 
-void person::login(){
+int person::login(){
    bool found = false;
-
-   fstream fin;
-   fin.open("acc_info.csv", ios:: in);
-
-   string CRN, Password;
-   cout << "\nEnter CRN: ";
-   getline(cin, CRN);
-
-   cout << "\nEnter password :";
-   getline(cin, Password);
-
-   vector<string> record;
-   string line, word, temp;
-
-   if(fin){
-      while(getline(fin, line)){
-         record.clear();
-         stringstream s(line);
-
-         while(getline(s, word, ',')){
-            record.push_back(word);
-         }
-
-         if(record.size() != 11)
-                throw std::runtime_error("invalid record size (" + std::to_string(record.size()) + ")");
-
-         if(CRN == record[0] && Password == record[10]){
-            found = true;
-            cout << "\nLogin successfull!\n\n";
-            cout << "ACCOUNT DETAILS: \n\n";
-            
-            cout << "Name : " << record[2] + record[3] + record[4]
-                 << "\nCRN: " << record[0]
-                 << "\nAccount Number: " << record[1]
-                 << "\nEmail: " << record[6]
-                 << "\nAddress: " << record[7]
-                 << "\nBalance: Rs." << record[9];
-
-            break;
-         }
-      }
-      if(!found){
-         cout << "\nWrong CRN and password entered\n\n";
-      }
-
-   }
-   else{
-      cout << "\nTechnical fault occured.. try again after some time!!\n\n";
-   }
    
-}
+   ifstream readPerson("acc_info.dat", ios::in | ios::binary);
+   person pReadObj;
 
+   
+   readPerson.seekg(0, ios::end);
+
+   /*
+   int numberOfPerson = readPerson.tellg()/sizeof(person);
+
+   cout << "\nThere are: " << numberOfPerson << " account holders";
+   */
+
+  string cRn, pass;
+  char choice = 'y';
+  bool foundPerson = false;
+  int getPos = 0, EndPos = readPerson.tellg(), sizeOfPerson = sizeof(person);
+  
+   readPerson.seekg(0);
+
+   do {
+      cout << "\nEnter CRN: ";
+      getline(cin, cRn);
+
+      cout << "\nEnter password: ";
+      getline(cin, pass);
+
+      while(getPos< EndPos || foundPerson == false) {
+         readPerson.read(reinterpret_cast<char*>(&pReadObj), sizeof(person));
+
+         if(cRn == pReadObj.retCRN()) {
+            if(pass == pReadObj.retPass) {
+               foundPerson = true;
+               break;
+            }
+         }
+         getPos+= sizeOfPerson;
+      }
+
+      if(foundPerson == false) {
+         cout << "\nWrong CRN and password entered... try again?(y/n): ";
+         cin >> choice;
+      }
+   }while(choice == 'y' || choice == 'Y');
+
+  if(foundPerson == false) {
+     return -1;
+  }
+  else {
+     return foundPerson;
+  }
+}
 
 void person::welcome(){
    //MAIN MENU
    int ch = 0;
+   bool isCorrectChoice = false;
    do{
          cout<<endl; 
       
-         cout<<"\t\t\t🌸  𝙒 𝙀 𝙇 𝘾 𝙊 𝙈 𝙀   𝙏 𝙊  🅖 🅤 🅡 🅤  🅝 🅐 🅝 🅐 🅚  🅑 🅐 🅝 🅚   𝙊 𝙁  𝙄 𝙉 𝘿 𝙄 𝘼  🌸\n";
-         cout<<"\t\t\t≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕\n\n\n\n";
-
          cout << "How can we help you?: "<< endl;
          cout << "1.Accounts\n"
             << "2.Deposit\n"
@@ -169,15 +160,21 @@ void person::welcome(){
             << "7.Exit\n";
             
             cout<<"≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕\n";
-            cout<< "Enter your choice( 0 to quit): ";
+            cout<< "Enter your choice: ";
             cin >> ch;
             cin.ignore();
          
-            if(ch > 7 || ch < 0)
+            if(ch > 7 || ch < 1) {
                cout << "\nEntered a wrong choice.. Enter again..\n";
-            else
-               after_user_choice(ch);  
-   }while(ch!=7);   
+               
+               isCorrectChoice = false;
+            }
+            else {
+               isCorrectChoice = true;
+               after_user_choice(ch);
+            }
+
+   }while(!isCorrectChoice);   
 }
 
 void person:: after_user_choice(int c){
@@ -203,7 +200,7 @@ void person:: after_user_choice(int c){
    case 6: investments();
       break;      
 
-   default: cout<< "\n\nWrong Choice Entered!!! Enter gain: \n\n";
+   default: cout<< "\n\nWrong Choice Entered!!! Enter again: \n\n";
             welcome();
       break;
    }
@@ -254,6 +251,23 @@ int person::check(int upperLim, int lowerLim, int choice){
             }
 }
 
-void person::show_account(){
+void person::show_account(int loginCode){
+   // int loginCode = login();
 
+   if(loginCode > 0) {
+      cout << "\n\nLogged in Successfully!!!\n\n";
+
+      ifstream showPerson("acc_info.dat", ios::in | ios::binary);
+      showPerson.seekg(loginCode);
+      person tempPerson;
+      
+   }
 }
+
+/*
+void person:: viewPersonDetails() {
+   cout << "\n\n***DETAILS***\n\n"
+        << "Name: " << ""
+        << "CRN :" << "";
+}
+*/

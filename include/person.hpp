@@ -5,10 +5,10 @@ class person {
 
     public:
         void welcome();
-        void show_account();
+        void show_account(int);
         void after_user_choice(int);
         void create_acc();
-        void login();
+        int login();
         void accounts();
         void deposit();
         void cards();
@@ -16,9 +16,18 @@ class person {
         void insurance();
         void investments();
         int check(int, int, int);
+        // void viewPersonDetails();
         bool d;
         string retacno() const{
 	        return acc_no;
+        }
+
+        string retPass() const{
+	        return password;
+        }
+
+        string retCRN() const{
+	        return crn;
         }
         
         ~person();

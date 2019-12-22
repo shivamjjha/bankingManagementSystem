@@ -17,6 +17,8 @@
 using namespace std;
 
 void start(){
+  cout << "Welcome to GURU NANAK DEV BANK\n";
+         cout<<"\t\t\t≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕≕\n\n\n\n";
   person p;
    p.welcome();  
 }

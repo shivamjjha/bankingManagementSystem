@@ -18,6 +18,6 @@ class accounts: public person{
         void currentAccount();
         void createSavingsAccount();
         void password();
-        void options();
+        void options(int);
 
 };

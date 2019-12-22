@@ -16,7 +16,7 @@
 
 using namespace std;
 
-void accounts::options(){
+void accounts::options(int loginCode){
         char userChoice = 'y';
         int opt;
         cout << endl << endl;
@@ -29,12 +29,12 @@ void accounts::options(){
                 cin.ignore();
 
                 switch(opt){
-                        case 1: show_account();
+                        case 1: show_account(loginCode);
                                 break;
                         
-                        case 2:
-                                return;
+                        case 2: person::welcome();
                                 break;
+                                
                         
                         default :
                                 cout << "\nWrong choice entered.. enter again? (y/n): ";
@@ -62,11 +62,12 @@ char opt = 'y';
         switch(ch){
             case -1: //return true;
                 cout << "\nHope to see you soon :)\n";
-                exit(0);
-                    opt = 'n';
-                    break;
+                        //exit(0);
+                        opt = 'n';
+                        break;
 
             case 0: //::start();
+                        person::welcome();
                     opt = 'n';
                     break;
 
@@ -93,7 +94,7 @@ void accounts::savingsAccount(){
         int ch;
         char Sch = 'y';
         
-        cout << endl  << endl<< "Welcome to the savings bank section" << endl;
+        cout << endl  << endl<< "Welcome to the Savings Account section" << endl;
         
 
 
@@ -109,13 +110,15 @@ void accounts::savingsAccount(){
                 case 1:
                         createSavingsAccount();
                         Sch = 'n';
+                        person::welcome();
+                        break;
                 
                 case 2: 
-                        login();
-                        options();
+                        int loginCode = login();
+                        options(loginCode);
                         break;
 
-                case 3:
+                case 3: person::welcome();
                         return;
                         break;
 
