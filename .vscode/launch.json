@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
     "version": "0.2.0",
     "configurations": [
@@ -24,31 +23,4 @@
             ]
         }
     ]
-=======
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "C++ Debug (gdb)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/main",
-            "preLaunchTask": "Build C++ project",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
-        }
-    ]
->>>>>>> 428b70548c54de0a07312281817d98276f11b41f
 }
