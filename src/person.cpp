@@ -97,18 +97,18 @@ int person::login(){
    
    readPerson.seekg(0, ios::end);
 
-   /*
+   
    int numberOfPerson = readPerson.tellg()/sizeof(person);
 
    cout << "\nThere are: " << numberOfPerson << " account holders";
-   */
+   
 
   string cRn, pass;
   char choice = 'y';
   bool foundPerson = false;
-  int getPos = 0, EndPos = readPerson.tellg(), sizeOfPerson = sizeof(person);
+  int getPos = -sizeof(person), EndPos = readPerson.tellg(), sizeOfPerson = sizeof(person);
   
-   readPerson.seekg(0);
+   readPerson.seekg(getPos);
 
    do {
       cout << "\nEnter CRN: ";
@@ -117,21 +117,25 @@ int person::login(){
       cout << "\nEnter password: ";
       getline(cin, pass);
 
-      while(getPos< EndPos || foundPerson == false) {
+      while(getPos< EndPos && foundPerson == false) {
+         getPos+= sizeOfPerson;
+         readPerson.seekg(getPos);
+
          readPerson.read(reinterpret_cast<char*>(&pReadObj), sizeof(person));
 
          if(cRn == pReadObj.retCRN()) {
-            if(pass == pReadObj.retPass) {
+            if(pass == pReadObj.retPass()) {
                foundPerson = true;
+               cout << "\nLogin Code: " << getPos << "\n";
                break;
             }
          }
-         getPos+= sizeOfPerson;
       }
 
       if(foundPerson == false) {
          cout << "\nWrong CRN and password entered... try again?(y/n): ";
          cin >> choice;
+         cin.ignore();
       }
    }while(choice == 'y' || choice == 'Y');
 
@@ -139,7 +143,7 @@ int person::login(){
      return -1;
   }
   else {
-     return foundPerson;
+     return getPos;
   }
 }
 
@@ -180,7 +184,7 @@ void person::welcome(){
 void person:: after_user_choice(int c){
    switch (c){
    case 7: cout << "\nHope to see you soon again :)\n"; 
-           break;
+           return;
       
    case 1: accounts() ;
       break;
