@@ -108,19 +108,24 @@ void accounts::savingsAccount(){
                 switch (ch)
                 {
                 case 1:
-                        createSavingsAccount();
-                        Sch = 'n';
-                        person::welcome();
-                        break;
-                
-                case 2: 
-                        int loginCode = login();
-                        options(loginCode);
-                        break;
+                        {
+                                createSavingsAccount();
+                                Sch = 'n';
+                                person::welcome();
+                                break;
+                }
 
-                case 3: person::welcome();
+                case 2: {
+                                int LoginCode = login();
+                                options(LoginCode);
+                                break;
+                }       
+
+                case 3: {
+                        person::welcome();
                         return;
                         break;
+                }
 
                 case 4:
                         exit(0);
