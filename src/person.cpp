@@ -68,6 +68,7 @@ void person::create_acc(){
      if(writeObject.password == repswrd){
                
            cout<<"Passwords matched succesfully!"<<endl<<endl;
+           writeObject.password = repswrd;
            areEqual = true;
            }
      else{
@@ -106,9 +107,13 @@ int person::login(){
   string cRn, pass;
   char choice = 'y';
   bool foundPerson = false;
-  int getPos = -sizeof(person), EndPos = readPerson.tellg(), sizeOfPerson = sizeof(person);
+  int getPos = -sizeof(person), EndPos = readPerson.tellg(), sizeOfPerson = sizeof(pReadObj);
+
+  cout << "\nEnd Pos: " << EndPos << endl;
   
    readPerson.seekg(getPos);
+
+   cout << "\nPosition before loop: " << getPos << endl;
 
    do {
       cout << "\nEnter CRN: ";
@@ -121,7 +126,14 @@ int person::login(){
          getPos+= sizeOfPerson;
          readPerson.seekg(getPos);
 
-         readPerson.read(reinterpret_cast<char*>(&pReadObj), sizeof(person));
+        cout << "\nNow position: " << getPos << endl;
+
+
+         readPerson.read(reinterpret_cast<char*>(&pReadObj), sizeof(pReadObj));
+         
+         if(getPos >= 0) {
+            cout << "\nCRN: " << pReadObj.retCRN() << "\n Password: " << pReadObj.retPass() << endl;
+         }
 
          if(cRn == pReadObj.retCRN()) {
             if(pass == pReadObj.retPass()) {
@@ -184,7 +196,7 @@ void person::welcome(){
 void person:: after_user_choice(int c){
    switch (c){
    case 7: cout << "\nHope to see you soon again :)\n"; 
-           return;
+           exit(0);
       
    case 1: accounts() ;
       break;
