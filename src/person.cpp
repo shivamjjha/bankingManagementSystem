@@ -129,14 +129,14 @@ int person::login(){
         cout << "\nNow position: " << getPos << endl;
 
 
-         readPerson.read(reinterpret_cast<char*>(&pReadObj), sizeof(pReadObj));
+         readPerson.read(reinterpret_cast<char*>(&pReadObj), sizeof(pReadObj));  
          
          if(getPos >= 0) {
-            cout << "\nCRN: " << pReadObj.retCRN() << "\n Password: " << pReadObj.retPass() << endl;
+            cout << "\nCRN: " << pReadObj.crn << "\n Password: " << pReadObj.crn << endl; 
          }
 
-         if(cRn == pReadObj.retCRN()) {
-            if(pass == pReadObj.retPass()) {
+         if(cRn == pReadObj.crn) {
+            if(pass == pReadObj.password) {
                foundPerson = true;
                cout << "\nLogin Code: " << getPos << "\n";
                break;
